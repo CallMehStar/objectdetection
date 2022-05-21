@@ -1,8 +1,9 @@
 Status = "";
-TV_image = "";
+AC_image = "";
+objects = [];
 
 function preload(){
-    TV_image = loadImage("TV.jpg");
+    AC_image = loadImage("AC.jpg");
 }
 
 function setup(){
@@ -15,7 +16,7 @@ function setup(){
 function modelLoaded(){
     console.log("Model Loaded!");
     Status = true;
-    object_Detector.detect(TV_image,gotResults);
+    object_Detector.detect(AC_image,gotResults);
 }
 
 function gotResults(error,results){
@@ -23,8 +24,21 @@ function gotResults(error,results){
         console.error(error);
     }
     console.log(results);
+    objects = results;
 }
 
 function draw(){
-    image(TV_image,0,0,640,350);
+    image(AC_image,0,0,640,350);
+    if(Status != ""){
+        for(i = 0; i < objects.length; i++){
+            document.getElementById("status").innerHTML = "Status: Objects Detected";
+
+            fill("#fc0303");
+            percent = floor(objects[i].confidence * 100);
+            text(objects[i].label + " " + percent + "%",objects[i].x, objects[i].y);
+            noFill();
+            stroke("#fc0303");
+            rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
+        }
+    }
 }
